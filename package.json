@@ -13,6 +13,13 @@
   "engines": {
     "vscode": "^1.101.0"
   },
+  "keywords": [
+    "AI",
+    "daily standup",
+    "git",
+    "summary",
+    "bot"
+  ],
   "categories": [
     "Other"
   ],
