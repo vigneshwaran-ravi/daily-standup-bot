@@ -6,6 +6,7 @@
     "type": "git",
     "url": "https://github.com/vigneshwaran-ravi/daily-standup-bot"
   },
+  "icon": "public/logo.png",
   "description": "AI-powered daily standup reports from Git commits",
   "version": "0.0.1",
   "license": "MIT",
