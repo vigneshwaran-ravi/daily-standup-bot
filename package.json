@@ -8,6 +8,7 @@
   },
   "description": "AI-powered daily standup reports from Git commits",
   "version": "0.0.1",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.101.0"
   },
