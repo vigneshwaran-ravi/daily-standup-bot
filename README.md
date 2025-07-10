@@ -1,71 +1,116 @@
-# ai-commit README
+# Daily Standup Bot
 
-This is the README for your extension "ai-commit". After writing up a brief description, we recommend including the following sections.
+AI-powered daily standup reports from Git commits. This VS Code extension automatically generates professional standup summaries from your git commits using OpenAI or Google Gemini, and can send them directly to Slack.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- 🤖 **AI-Powered Summaries**: Uses OpenAI GPT or Google Gemini to generate intelligent commit summaries
+- 📅 **Daily Standup Reports**: Automatically analyzes today's commits and creates standup-ready summaries
+- 🔄 **Multiple AI Providers**: Choose between OpenAI (ChatGPT) or Google Gemini
+- 📱 **Slack Integration**: Send summaries directly to Slack channels via webhook or bot token
+- 🔐 **Secure Storage**: API keys stored securely using VS Code's encrypted storage
+- ⚙️ **Easy Configuration**: Simple setup through VS Code commands and settings
 
-For example if there is an image subfolder under your extension project workspace:
+## How It Works
 
-\!\[feature X\]\(images/feature-x.png\)
+1. **Configure AI Provider**: Set up your OpenAI or Gemini API key
+2. **Optional Slack Setup**: Configure Slack webhook or bot token for team sharing
+3. **Generate Standup**: Run the command to analyze today's commits
+4. **Share Results**: View, copy, or send the AI-generated summary to Slack
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Commands
+
+Access these commands via the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`):
+
+- `Daily Standup Bot: Generate Daily Standup` - Create AI summary from today's commits
+- `Daily Standup Bot: Configure OpenAI API Key` - Set up OpenAI integration
+- `Daily Standup Bot: Configure Gemini API Key` - Set up Google Gemini integration
+- `Daily Standup Bot: Switch AI Provider` - Toggle between OpenAI and Gemini
+- `Daily Standup Bot: Configure Slack Integration` - Set up Slack webhook or bot token
+- `Daily Standup Bot: Test Slack Connection` - Verify Slack configuration
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- VS Code 1.101.0 or higher
+- Git repository with commit history
+- API key for either:
+  - OpenAI (ChatGPT) - Get from [OpenAI Platform](https://platform.openai.com/api-keys)
+  - Google Gemini - Get from [Google AI Studio](https://makersuite.google.com/app/apikey)
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- `daily-standup-bot.provider`: Choose between "openai" or "gemini"
+- `daily-standup-bot.openai.model`: OpenAI model selection (gpt-3.5-turbo, gpt-4, etc.)
+- `daily-standup-bot.gemini.model`: Gemini model selection (gemini-pro, gemini-2.0-flash, etc.)
+- `daily-standup-bot.slack.defaultChannel`: Default Slack channel for messages
+- `daily-standup-bot.slack.botUsername`: Display name for the bot in Slack
+- `daily-standup-bot.slack.botIcon`: Emoji icon for the bot in Slack
 
-## Known Issues
+## Setup Guide
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+### 1. Install the Extension
+
+Install "Daily Standup Bot" from the VS Code Extension Marketplace.
+
+### 2. Configure AI Provider
+
+Choose your preferred AI service:
+
+**For OpenAI:**
+
+1. Get API key from [OpenAI Platform](https://platform.openai.com/api-keys)
+2. Run `Daily Standup Bot: Configure OpenAI API Key`
+3. Select your preferred model
+
+**For Google Gemini:**
+
+1. Get API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Run `Daily Standup Bot: Configure Gemini API Key`
+3. Select your preferred model
+
+### 3. Optional: Configure Slack
+
+To send summaries to Slack:
+
+**Webhook Method (Recommended):**
+
+1. Create a Slack webhook in your workspace
+2. Run `Daily Standup Bot: Configure Slack Integration`
+3. Choose "Webhook URL" and paste your webhook
+
+**Bot Token Method:**
+
+1. Create a Slack app with bot permissions
+2. Run `Daily Standup Bot: Configure Slack Integration`
+3. Choose "Bot Token" and paste your bot token
+
+### 4. Generate Your First Standup
+
+1. Make sure you have commits from today
+2. Run `Daily Standup Bot: Generate Daily Standup`
+3. Choose how to share the results
+
+## Privacy & Security
+
+- All API keys are stored securely using VS Code's encrypted storage
+- No commit data is stored permanently
+- All communication with AI services is encrypted
+- You maintain full control over your data
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
+Initial release featuring:
 
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+- AI-powered commit summarization
+- OpenAI and Google Gemini integration
+- Slack webhook and bot token support
+- Secure credential storage
+- Multiple output formats (view, copy, send to Slack)
 
 ---
 
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+**Enjoy your automated daily standups!** 🚀

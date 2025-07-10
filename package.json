@@ -1,7 +1,7 @@
 {
-  "name": "ai-commit",
-  "displayName": "ai-commit",
-  "description": "",
+  "name": "daily-standup-bot",
+  "displayName": "Daily Standup Bot",
+  "description": "AI-powered daily standup reports from Git commits",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.101.0"
@@ -14,10 +14,110 @@
   "contributes": {
     "commands": [
       {
-        "command": "ai-commit.helloWorld",
+        "command": "daily-standup-bot.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "daily-standup-bot.configureOpenAI",
+        "title": "Configure OpenAI API Key",
+        "category": "Daily Standup Bot"
+      },
+      {
+        "command": "daily-standup-bot.configureGemini",
+        "title": "Configure Gemini API Key",
+        "category": "Daily Standup Bot"
+      },
+      {
+        "command": "daily-standup-bot.switchProvider",
+        "title": "Switch AI Provider",
+        "category": "Daily Standup Bot"
+      },
+      {
+        "command": "daily-standup-bot.generateStandup",
+        "title": "Generate Daily Standup",
+        "category": "Daily Standup Bot"
+      },
+      {
+        "command": "daily-standup-bot.configureSlack",
+        "title": "Configure Slack Integration",
+        "category": "Daily Standup Bot"
+      },
+      {
+        "command": "daily-standup-bot.testSlack",
+        "title": "Test Slack Connection",
+        "category": "Daily Standup Bot"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Daily Standup Bot",
+      "properties": {
+        "daily-standup-bot.provider": {
+          "type": "string",
+          "enum": [
+            "openai",
+            "gemini"
+          ],
+          "default": "gemini",
+          "description": "AI provider to use for generating commit summaries"
+        },
+        "daily-standup-bot.openai.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI API Key (stored securely)"
+        },
+        "daily-standup-bot.openai.model": {
+          "type": "string",
+          "enum": [
+            "gpt-3.5-turbo",
+            "gpt-4",
+            "gpt-4-turbo",
+            "gpt-4o"
+          ],
+          "default": "gpt-3.5-turbo",
+          "description": "OpenAI model to use"
+        },
+        "daily-standup-bot.gemini.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Gemini API Key (stored securely)"
+        },
+        "daily-standup-bot.gemini.model": {
+          "type": "string",
+          "enum": [
+            "gemini-pro",
+            "gemini-2.0-flash",
+            "gemini-1.5-pro"
+          ],
+          "default": "gemini-2.0-flash",
+          "description": "Gemini model to use"
+        },
+        "daily-standup-bot.slack.webhookUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Slack webhook URL for sending messages"
+        },
+        "daily-standup-bot.slack.botToken": {
+          "type": "string",
+          "default": "",
+          "description": "Slack bot token (stored securely)"
+        },
+        "daily-standup-bot.slack.defaultChannel": {
+          "type": "string",
+          "default": "#general",
+          "description": "Default Slack channel to send messages to"
+        },
+        "daily-standup-bot.slack.botUsername": {
+          "type": "string",
+          "default": "AI Commit Bot",
+          "description": "Display name for the bot in Slack"
+        },
+        "daily-standup-bot.slack.botIcon": {
+          "type": "string",
+          "default": ":robot_face:",
+          "description": "Emoji icon for the bot in Slack"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
