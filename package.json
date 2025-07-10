@@ -1,6 +1,11 @@
 {
   "name": "daily-standup-bot",
   "displayName": "Daily Standup Bot",
+  "publisher": "vigneshwaran ravi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vigneshwaran-ravi/daily-standup-bot"
+  },
   "description": "AI-powered daily standup reports from Git commits",
   "version": "0.0.1",
   "engines": {
