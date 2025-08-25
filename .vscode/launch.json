@@ -2,19 +2,36 @@
 // Use IntelliSense to learn about possible attributes.
 // Hover to view descriptions of existing attributes.
 // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+// {
+//   "version": "0.2.0",
+//   "configurations": [
+//     {
+//       "name": "Run Extension",
+//       "type": "extensionHost",
+//       "request": "launch",
+//       "args": [
+//         "--extensionDevelopmentPath=${workspaceFolder}",
+//         "/Users/mako/Desktop/adjusterX/careerx-web/"
+//       ],
+//       "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+//       "preLaunchTask": "${defaultBuildTask}"
+//     }
+//   ]
+// }
 {
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run Extension",
+      "name": "Run Extension with careerx-web",
       "type": "extensionHost",
       "request": "launch",
+      "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "/Users/mako/Desktop/adjusterX/careerx-web"
+        "/Users/mako/Desktop/projects/ADJUSTERX/careerx-web"
       ],
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
-      "preLaunchTask": "${defaultBuildTask}"
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "preLaunchTask": "npm: compile"
     }
   ]
 }

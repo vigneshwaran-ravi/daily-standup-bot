@@ -57,6 +57,7 @@ export class OpenAIService {
     systemPrompt?: string
   ): Promise<AIResponse> {
     try {
+      console.log("Generating response with OpenAI...");
       const messages = [];
 
       if (systemPrompt) {
@@ -126,80 +127,126 @@ export class GeminiService {
   private baseUrl: string = "https://generativelanguage.googleapis.com/v1beta";
 
   constructor(config: AIServiceConfig) {
+    if (!config.apiKey) {
+      throw new Error("API key is required for GeminiService.");
+    }
     this.apiKey = config.apiKey;
     this.model = config.model || "gemini-pro";
   }
 
+  /**
+   * Generates a response from the Gemini API with a built-in retry mechanism.
+   * Implements exponential backoff to handle 429 "Too Many Requests" errors.
+   */
   async generateResponse(
     prompt: string,
     systemPrompt?: string
   ): Promise<AIResponse> {
-    try {
-      let fullPrompt = prompt;
+    const maxRetries = 5;
+    let currentRetry = 0;
+    let delay = 1000; // Start with a 1-second delay
 
-      if (systemPrompt) {
-        fullPrompt = `${systemPrompt}\n\n${prompt}`;
-      }
+    while (currentRetry < maxRetries) {
+      try {
+        let fullPrompt = prompt;
 
-      const response = await fetch(
-        `${this.baseUrl}/models/${this.model}:generateContent?key=${this.apiKey}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: fullPrompt,
-                  },
-                ],
-              },
-            ],
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 1000,
-            },
-          }),
+        if (systemPrompt) {
+          fullPrompt = `${systemPrompt}\n\n${prompt}`;
         }
-      );
 
-      if (!response.ok) {
-        throw new Error(
-          `Gemini API error: ${response.status} ${response.statusText}`
+        const response = await fetch(
+          `${this.baseUrl}/models/${this.model}:generateContent?key=${this.apiKey}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "User-Agent": "vscode-daily-standup-extension/1.0.0",
+            },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [
+                    {
+                      text: fullPrompt,
+                    },
+                  ],
+                },
+              ],
+              generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 1000,
+              },
+            }),
+          }
         );
+
+        // Better error handling with response body
+        if (!response.ok) {
+          const errorBody = await response.text();
+          console.error(`API Error ${response.status}:`, errorBody);
+
+          if (response.status === 429) {
+            throw new Error("429 Too Many Requests");
+          }
+
+          throw new Error(
+            `Gemini API error: ${response.status} ${response.statusText} - ${errorBody}`
+          );
+        }
+
+        const data = (await response.json()) as GeminiResponse;
+
+        if (
+          !data.candidates ||
+          !data.candidates[0] ||
+          !data.candidates[0].content
+        ) {
+          throw new Error("Invalid response format from Gemini API");
+        }
+
+        // If successful, return the response and exit the loop
+        return {
+          content: data.candidates[0].content.parts[0].text,
+          usage: {
+            promptTokens: data.usageMetadata?.promptTokenCount || 0,
+            completionTokens: data.usageMetadata?.candidatesTokenCount || 0,
+            totalTokens: data.usageMetadata?.totalTokenCount || 0,
+          },
+        };
+      } catch (error) {
+        // Check if the error is a rate limit error and if we can still retry
+        if (
+          error instanceof Error &&
+          error.message.includes("429") &&
+          currentRetry < maxRetries - 1
+        ) {
+          console.warn(
+            `Rate limit hit. Retrying in ${delay / 1000}s... (Attempt ${
+              currentRetry + 1
+            }/${maxRetries})`
+          );
+          await new Promise((resolve) => setTimeout(resolve, delay));
+          currentRetry++;
+          delay *= 2; // Double the delay for the next attempt (exponential backoff)
+        } else {
+          // For non-retryable errors or if max retries are exceeded, re-throw the error
+          console.error("Gemini Service Error:", error);
+          throw new Error(
+            `Failed to generate response: ${
+              error instanceof Error ? error.message : "Unknown error"
+            }`
+          );
+        }
       }
-
-      const data = (await response.json()) as GeminiResponse;
-
-      if (
-        !data.candidates ||
-        !data.candidates[0] ||
-        !data.candidates[0].content
-      ) {
-        throw new Error("Invalid response format from Gemini API");
-      }
-
-      return {
-        content: data.candidates[0].content.parts[0].text,
-        usage: {
-          promptTokens: data.usageMetadata?.promptTokenCount || 0,
-          completionTokens: data.usageMetadata?.candidatesTokenCount || 0,
-          totalTokens: data.usageMetadata?.totalTokenCount || 0,
-        },
-      };
-    } catch (error) {
-      console.error("Gemini Service Error:", error);
-      throw new Error(
-        `Failed to generate response: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
     }
+
+    // This line should theoretically not be reached, but it's good practice for type safety
+    throw new Error("Failed to generate response after maximum retries.");
   }
 
+  /**
+   * Creates a prompt to summarize commits and calls the generator.
+   */
   async summarizeCommits(commits: string[]): Promise<string> {
     const prompt = `Please summarize the following git commits into a concise daily standup update:
 
